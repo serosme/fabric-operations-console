@@ -36,7 +36,7 @@ const SPECIAL_CHARS = '!@#$%^&*()-_=+[{}]:;"\',<.>?';
 
 const JSON_LIMIT = 1024000; // 1 MB limit for JSON files
 
-const CHAINCODE_LIMIT = 25 * 1024 * 1024; // 25MB limit for chaincode files
+const CHAINCODE_LIMIT = 100 * 1024 * 1024; // 25MB limit for chaincode files
 
 const Helper = {
 	mapStateToProps: (state, propTypes) => {
