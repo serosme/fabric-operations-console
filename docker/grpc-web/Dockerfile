@@ -3,7 +3,7 @@ FROM golang:1.24.3-alpine as builder
 RUN apk update && apk add --no-cache alpine-sdk bash curl git ca-certificates openssl musl-dev && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/improbable-eng/grpc-web.git /go/src/github.com/improbable-eng/grpc-web
+RUN git clone https://github.com/serosme/grpc-web.git /go/src/github.com/improbable-eng/grpc-web
 
 RUN cd /go/src/github.com/improbable-eng/grpc-web/go/grpcwebproxy && \
 	go build
