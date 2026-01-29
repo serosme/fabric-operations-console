@@ -17,11 +17,14 @@ jobs:
 
       - name: Build
         run: |
-          ./docker/build_image.sh
+          ./scripts/buildImages.sh
           docker save ghcr.io/hyperledger-labs/fabric-console:latest > fabric-console.tar
+          docker save ghcr.io/hyperledger-labs/grpc-web:latest > grpc-web.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fabric-console-image
-          path: fabric-console.tar
+          name: docker-images
+          path: |
+            fabric-console.tar
+            grpc-web.tar
