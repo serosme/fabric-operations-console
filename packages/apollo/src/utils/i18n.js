@@ -1,18 +1,18 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import defaultTranslation from '../assets/i18n/en/messages.json';
+import defaultTranslationChinese from '../assets/i18n/cn/messages.json';
 
 i18n
 	.use(initReactI18next)
 	.init({
 		debug: false,
-		fallbackLng: 'en',
+		fallbackLng: 'cn',
 		interpolation: {
 			escapeValue: false, // not needed for react as it escapes by default
 		},
 		resources: {
-			en: {
-				translation: defaultTranslation
+			cn: {
+				translation: defaultTranslationChinese
 			}
 		},
 		react: {
