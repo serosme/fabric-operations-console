@@ -21,7 +21,7 @@ services:
 
     configtxlator:
         container_name: configtxlator
-        image: hyperledger/fabric-tools:2.2.3
+        image: hyperledger/fabric-tools:2.5.14
         command: /bin/bash -c "/usr/local/bin/configtxlator start --CORS=*"
         ports:
             - "7059:7059"
