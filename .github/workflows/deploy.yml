@@ -25,7 +25,7 @@ jobs:
         run: |
           ./scripts/buildImages.sh
           docker pull couchdb:3.1.1
-          docker pull fabric-tools:2.5.14
+          docker pull hyperledger/fabric-tools:2.5.14
           docker save \
             couchdb:3.1.1 \
             hyperledger/fabric-tools:2.5.14 \
