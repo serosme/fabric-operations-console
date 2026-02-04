@@ -12,8 +12,17 @@ jobs:
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up QEMU (for emulation)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -21,20 +30,29 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build
+      - name: Build and save images for ${{ matrix.arch }}
+        env:
+          PLATFORM: linux/${{ matrix.arch }}
         run: |
+          # 调用脚本进行单架构 buildx 构建（脚本会使用 --load）
           ./scripts/buildImages.sh
-          docker pull couchdb:3.1.1
-          docker pull hyperledger/fabric-tools:2.5.14
+
+          # 拉取/确保第三方镜像为对应平台（使用 --platform）
+          docker pull --platform $PLATFORM couchdb:3.1.1 || true
+          docker pull --platform $PLATFORM hyperledger/fabric-tools:2.5.14 || true
+          docker pull --platform $PLATFORM ghcr.io/hyperledger-labs/fabric-console:latest || true
+          docker pull --platform $PLATFORM ghcr.io/hyperledger-labs/grpc-web:latest || true
+
+          # 将这些镜像打包到一个 tar（文件名包含架构）
           docker save \
             couchdb:3.1.1 \
             hyperledger/fabric-tools:2.5.14 \
             ghcr.io/hyperledger-labs/fabric-console:latest \
             ghcr.io/hyperledger-labs/grpc-web:latest \
-            -o fabric-operations-console-amd64-images.tar
+            -o fabric-operations-console-${{ matrix.arch }}-images.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fabric-operations-console-amd64-images
-          path: fabric-operations-console-amd64-images.tar
+          name: fabric-operations-console-${{ matrix.arch }}-images
+          path: fabric-operations-console-${{ matrix.arch }}-images.tar
