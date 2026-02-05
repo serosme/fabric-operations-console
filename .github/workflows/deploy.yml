@@ -60,9 +60,9 @@ jobs:
             ghcr.io/hyperledger-labs/grpc-web:latest \
             busybox:latest \
             couchdb:3.4.2 \
-            fabric-ca:latest \
-            fabric-orderer:latest \
-            fabric-peer:latest \
+            hyperledger/fabric-ca:latest \
+            hyperledger/fabric-orderer:latest \
+            hyperledger/fabric-peer:latest \
             hyperledger/fabric-javaenv:2.5 \
             uozi/nginx-ui:v2.3.2 \
             -o fabric-${{ matrix.arch }}-images.tar
