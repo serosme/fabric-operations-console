@@ -35,7 +35,7 @@ jobs:
           ./scripts/buildImages.sh
 
           # 拉取区块链网络控制台的镜像（使用 --platform）
-          docker pull --platform $PLATFORM couchdb:3.1.1
+          docker pull --platform $PLATFORM couchdb:3.1.2
           docker pull --platform $PLATFORM hyperledger/fabric-tools:2.5.14
 
           # 拉取区块链网络的镜像（使用 --platform）
@@ -54,7 +54,7 @@ jobs:
 
           # 将这些镜像打包到一个 tar（文件名包含架构）
           docker save \
-            couchdb:3.1.1 \
+            couchdb:3.1.2 \
             hyperledger/fabric-tools:2.5.14 \
             ghcr.io/hyperledger-labs/fabric-console:latest \
             ghcr.io/hyperledger-labs/grpc-web:latest \
