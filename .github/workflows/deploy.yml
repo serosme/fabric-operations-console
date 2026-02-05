@@ -47,6 +47,11 @@ jobs:
           docker pull --platform $PLATFORM hyperledger/fabric-javaenv:2.5 || true
           docker pull --platform $PLATFORM uozi/nginx-ui:v2.3.2 || true
 
+          # 为部分镜像打上 latest 标签
+          docker tag ghcr.io/hyperledger/fabric-ca:1.5.15 hyperledger/fabric-ca:latest
+          docker tag ghcr.io/hyperledger/fabric-orderer:2.5.14 hyperledger/fabric-orderer:latest
+          docker tag ghcr.io/hyperledger/fabric-peer:2.5.14 hyperledger/fabric-peer:latest
+
           # 将这些镜像打包到一个 tar（文件名包含架构）
           docker save \
             couchdb:3.1.1 \
@@ -55,9 +60,9 @@ jobs:
             ghcr.io/hyperledger-labs/grpc-web:latest \
             busybox:latest \
             couchdb:3.4.2 \
-            ghcr.io/hyperledger/fabric-ca:1.5.15 \
-            ghcr.io/hyperledger/fabric-orderer:2.5.14 \
-            ghcr.io/hyperledger/fabric-peer:2.5.14 \
+            fabric-ca:latest \
+            fabric-orderer:latest \
+            fabric-peer:latest \
             hyperledger/fabric-javaenv:2.5 \
             uozi/nginx-ui:v2.3.2 \
             -o fabric-${{ matrix.arch }}-images.tar
