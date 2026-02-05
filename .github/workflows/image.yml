@@ -1,0 +1,52 @@
+name: Pull Multiple Docker Images And Upload Artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      images:
+        description: 'Docker images with tag, comma separated (e.g. nginx:1.25,redis:7)'
+        required: true
+      platform:
+        description: 'Target platform (linux/amd64, linux/arm64)'
+        required: true
+        default: 'linux/amd64'
+
+jobs:
+  pull-and-pack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Pull images
+        run: |
+          IFS=',' read -ra IMAGES <<< "${{ inputs.images }}"
+
+          for IMAGE in "${IMAGES[@]}"; do
+            echo "Pulling $IMAGE for ${{ inputs.platform }}"
+            docker pull --platform=${{ inputs.platform }} "$IMAGE"
+          done
+
+      - name: Save images to tar.gz
+        run: |
+          IFS=',' read -ra IMAGES <<< "${{ inputs.images }}"
+          COUNT=${#IMAGES[@]}
+
+          if [ "$COUNT" -eq 1 ]; then
+            IMAGE="${IMAGES[0]}"
+            SAFE_NAME=$(echo "$IMAGE" | tr '/:' '_')
+            TAR_NAME="${SAFE_NAME}_${{ inputs.platform }}.tar.gz"
+            docker save "$IMAGE" | gzip > "$TAR_NAME"
+          else
+            TAR_NAME="docker_images_${{ inputs.platform }}.tar.gz"
+            docker save "${IMAGES[@]}" | gzip > "$TAR_NAME"
+          fi
+
+          echo "TAR_NAME=$TAR_NAME" >> $GITHUB_ENV
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-images-${{ inputs.platform }}
+          path: ${{ env.TAR_NAME }}
