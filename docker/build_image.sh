@@ -8,7 +8,7 @@ IMAGE_BUILD_NAME=fabric-console:latest
 
 # Info about the build is saved in tags on the docker image
 COMMIT=$(git rev-parse --short HEAD)
-GIT_TAG=$(git describe --tags || true)
+GIT_TAG=$(git describe --tags)
 BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # Where the script lives
 
