@@ -37,11 +37,17 @@ jobs:
           # 调用脚本进行单架构 buildx 构建（脚本会使用 --load）
           ./scripts/buildImages.sh
 
-          # 拉取/确保第三方镜像为对应平台（使用 --platform）
+          # 拉取区块链网络控制台的镜像（使用 --platform）
           docker pull --platform $PLATFORM couchdb:3.1.1 || true
           docker pull --platform $PLATFORM hyperledger/fabric-tools:2.5.14 || true
-          docker pull --platform $PLATFORM ghcr.io/hyperledger-labs/fabric-console:latest || true
-          docker pull --platform $PLATFORM ghcr.io/hyperledger-labs/grpc-web:latest || true
+
+          # 拉取区块链网络的镜像（使用 --platform）
+          docker pull --platform $PLATFORM busybox:latest || true
+          docker pull --platform $PLATFORM couchdb:3.4.2 || true
+          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-ca:1.5.15 || true
+          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-orderer:2.5.14 || true
+          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-peer:2.5.14 || true
+          docker pull --platform $PLATFORM hyperledger/fabric-javaenv:2.5 || true
 
           # 将这些镜像打包到一个 tar（文件名包含架构）
           docker save \
@@ -49,10 +55,16 @@ jobs:
             hyperledger/fabric-tools:2.5.14 \
             ghcr.io/hyperledger-labs/fabric-console:latest \
             ghcr.io/hyperledger-labs/grpc-web:latest \
-            -o fabric-operations-console-${{ matrix.arch }}-images.tar
+            busybox:latest \
+            couchdb:3.4.2 \
+            ghcr.io/hyperledger/fabric-ca:1.5.15 \
+            ghcr.io/hyperledger/fabric-orderer:2.5.14 \
+            ghcr.io/hyperledger/fabric-peer:2.5.14 \
+            hyperledger/fabric-javaenv:2.5 \
+            -o fabric-${{ matrix.arch }}-images.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fabric-operations-console-${{ matrix.arch }}-images
-          path: fabric-operations-console-${{ matrix.arch }}-images.tar
+          name: fabric-${{ matrix.arch }}-images
+          path: fabric-${{ matrix.arch }}-images.tar
