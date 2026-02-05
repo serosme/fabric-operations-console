@@ -45,7 +45,7 @@ jobs:
           docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-orderer:2.5.14 || true
           docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-peer:2.5.14 || true
           docker pull --platform $PLATFORM hyperledger/fabric-javaenv:2.5 || true
-          docker pull --platform $PLATFORM nginx:v2.3.2 || true
+          docker pull --platform $PLATFORM uozi/nginx-ui:v2.3.2 || true
 
           # 将这些镜像打包到一个 tar（文件名包含架构）
           docker save \
@@ -59,7 +59,7 @@ jobs:
             ghcr.io/hyperledger/fabric-orderer:2.5.14 \
             ghcr.io/hyperledger/fabric-peer:2.5.14 \
             hyperledger/fabric-javaenv:2.5 \
-            nginx:v2.3.2 \
+            uozi/nginx-ui:v2.3.2 \
             -o fabric-${{ matrix.arch }}-images.tar
 
       - name: Upload artifact
