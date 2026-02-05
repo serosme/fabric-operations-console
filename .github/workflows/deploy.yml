@@ -35,17 +35,17 @@ jobs:
           ./scripts/buildImages.sh
 
           # 拉取区块链网络控制台的镜像（使用 --platform）
-          docker pull --platform $PLATFORM couchdb:3.1.1 || true
-          docker pull --platform $PLATFORM hyperledger/fabric-tools:2.5.14 || true
+          docker pull --platform $PLATFORM couchdb:3.1.1
+          docker pull --platform $PLATFORM hyperledger/fabric-tools:2.5.14
 
           # 拉取区块链网络的镜像（使用 --platform）
-          docker pull --platform $PLATFORM busybox:latest || true
-          docker pull --platform $PLATFORM couchdb:3.4.2 || true
-          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-ca:1.5.15 || true
-          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-orderer:2.5.14 || true
-          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-peer:2.5.14 || true
-          docker pull --platform $PLATFORM hyperledger/fabric-javaenv:2.5 || true
-          docker pull --platform $PLATFORM uozi/nginx-ui:v2.3.2 || true
+          docker pull --platform $PLATFORM busybox:latest
+          docker pull --platform $PLATFORM couchdb:3.4.2
+          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-ca:1.5.15
+          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-orderer:2.5.14
+          docker pull --platform $PLATFORM ghcr.io/hyperledger/fabric-peer:2.5.14
+          docker pull --platform $PLATFORM hyperledger/fabric-javaenv:2.5
+          docker pull --platform $PLATFORM uozi/nginx-ui:v2.3.2
 
           # 为部分镜像打上 latest 标签
           docker tag ghcr.io/hyperledger/fabric-ca:1.5.15 hyperledger/fabric-ca:latest
