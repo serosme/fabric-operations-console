@@ -1,10 +1,10 @@
-name: Pull Multiple Docker Images And Upload Artifact
+name: Pull Docker Image And Upload Artifact
 
 on:
   workflow_dispatch:
     inputs:
-      images:
-        description: 'Docker images with tag, comma separated (e.g. nginx:1.25,redis:7)'
+      image:
+        description: 'Docker image with tag (e.g. nginx:1.25)'
         required: true
       platform:
         description: 'Target platform (linux/amd64, linux/arm64)'
@@ -19,34 +19,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Pull images
+      - name: Pull and Save Image
         run: |
-          IFS=',' read -ra IMAGES <<< "${{ inputs.images }}"
+          echo "Pulling ${{ inputs.image }} for ${{ inputs.platform }}"
+          docker pull --platform=${{ inputs.platform }} "${{ inputs.image }}"
 
-          for IMAGE in "${IMAGES[@]}"; do
-            echo "Pulling $IMAGE for ${{ inputs.platform }}"
-            docker pull --platform=${{ inputs.platform }} "$IMAGE"
-          done
+          # 将镜像名和平台名安全化，用于文件名
+          SAFE_IMAGE=$(echo "${{ inputs.image }}" | tr '/:' '_')
+          SAFE_PLATFORM=$(echo "${{ inputs.platform }}" | tr '/' '_')
+          TAR_NAME="${SAFE_IMAGE}_${SAFE_PLATFORM}.tar.gz"
 
-      - name: Save images to tar.gz
-        run: |
-          IFS=',' read -ra IMAGES <<< "${{ inputs.images }}"
-          COUNT=${#IMAGES[@]}
+          docker save "${{ inputs.image }}" | gzip > "$TAR_NAME"
 
-          if [ "$COUNT" -eq 1 ]; then
-            IMAGE="${IMAGES[0]}"
-            SAFE_NAME=$(echo "$IMAGE" | tr '/:' '_')
-            TAR_NAME="${SAFE_NAME}_${{ inputs.platform }}.tar.gz"
-            docker save "$IMAGE" | gzip > "$TAR_NAME"
-          else
-            TAR_NAME="docker_images_${{ inputs.platform }}.tar.gz"
-            docker save "${IMAGES[@]}" | gzip > "$TAR_NAME"
-          fi
-
+          # 设置环境变量供上传使用
           echo "TAR_NAME=$TAR_NAME" >> $GITHUB_ENV
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: docker-images-${{ inputs.platform }}
+          name: ${{ env.TAR_NAME }}
           path: ${{ env.TAR_NAME }}
