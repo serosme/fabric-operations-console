@@ -65,10 +65,10 @@ jobs:
             hyperledger/fabric-peer:latest \
             hyperledger/fabric-javaenv:2.5 \
             uozi/nginx-ui:v2.3.2 \
-            -o fabric-${{ matrix.arch }}-images.tar
+            | gzip > fabric-${{ matrix.arch }}-images.tar.gz
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: fabric-${{ matrix.arch }}-images
-          path: fabric-${{ matrix.arch }}-images.tar
+          path: fabric-${{ matrix.arch }}-images.tar.gz
