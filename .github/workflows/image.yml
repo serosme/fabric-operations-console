@@ -7,9 +7,13 @@ on:
         description: 'Docker image with tag (e.g. nginx:1.25)'
         required: true
       platform:
-        description: 'Target platform (linux/amd64, linux/arm64)'
+        description: 'Target platform'
         required: true
         default: 'linux/amd64'
+        type: choice
+        options:
+          - linux/amd64
+          - linux/arm64
 
 jobs:
   pull-and-pack:
